@@ -1,0 +1,357 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPNloyHI/Sgd4DWTbcyNdos",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/EduzzDev/Chat-Bot-/blob/EduzzDev%2Fprojeto-form/Chat-Bot\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Instalação do modelo"
+      ],
+      "metadata": {
+        "id": "rfF58TQ-Kq60"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "id": "0Bk81ghNB3sL"
+      },
+      "outputs": [],
+      "source": [
+        "!pip install -q -U google-generativeai\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Importando o modelo do gemini da google e dando um nome e coloca a sua api key e configurando"
+      ],
+      "metadata": {
+        "id": "Uk0w6eTpK1h0"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Import the Python SDK\n",
+        "import google.generativeai as genai\n",
+        "\n",
+        "\n",
+        "GOOGLE_API_KEY=\"CHAVE API KEY\"\n",
+        "genai.configure(api_key=GOOGLE_API_KEY)"
+      ],
+      "metadata": {
+        "id": "yJgG_vL8CIcF"
+      },
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Criando uma estrutura de repetição para que ele nós der uma lista baseado no generateContent\n",
+        "\n",
+        "---\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "VcpXFBJULCSv"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for m in genai.list_models():\n",
+        "  if 'generateContent' in m.supported_generation_methods:\n",
+        "    print(m.name)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 139
+        },
+        "id": "kRb2zcGcCLdd",
+        "outputId": "c69dd5a8-e346-4bd7-847e-fda4216371a7"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "models/gemini-1.0-pro\n",
+            "models/gemini-1.0-pro-001\n",
+            "models/gemini-1.0-pro-latest\n",
+            "models/gemini-1.0-pro-vision-latest\n",
+            "models/gemini-1.5-pro-latest\n",
+            "models/gemini-pro\n",
+            "models/gemini-pro-vision\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Configurando a geração de contéudo"
+      ],
+      "metadata": {
+        "id": "56OBH-jiOBQ1"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "generation_config = {\n",
+        "   \"candidate_count\": 1 ,\n",
+        "   \"temperature\" : 0.5,\n",
+        "}"
+      ],
+      "metadata": {
+        "id": "z8TkRWWCG_lj"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "safety_settings = {\n",
+        "    \"HARASSMENT\": \"BLOCK_NONE\",\n",
+        "    \"HATE\": \"BLOCK_NONE\",\n",
+        "    \"SEXUAL\": \"BLOCK_NONE\",\n",
+        "    \"DANGEROUS\": \"BLOCK_NONE\",\n",
+        "    \"MEDICAL\": \"BLOCK_NONE\",\n",
+        "}"
+      ],
+      "metadata": {
+        "id": "kHWbjWfOJNPy"
+      },
+      "execution_count": 9,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model = genai.GenerativeModel(model_name=\"gemini-1.0-pro\")"
+      ],
+      "metadata": {
+        "id": "8j6gciMkyPsz"
+      },
+      "execution_count": 24,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "response = model.generate_content(\"Fale sobre IA\")\n",
+        "print(response.text)"
+      ],
+      "metadata": {
+        "id": "zERnsD4GzBa4"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "chat = model.start_chat(history=[])"
+      ],
+      "metadata": {
+        "id": "WNjgrH24zrSF"
+      },
+      "execution_count": 28,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "prompt = input('Esperando prompt ')\n",
+        "\n",
+        "while prompt != \"fim\":\n",
+        "  response = chat.send_message(prompt)\n",
+        "  print(\"Resposta: \",response.text, '\\n')\n",
+        "  prompt = input('Esperando prompt ')\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 86
+        },
+        "id": "laFQis3W0TBD",
+        "outputId": "25301b17-b5f3-4985-bba5-6347fe791628"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "Esperando prompt Qual a capital do japão\n",
+            "Resposta:  Tóquio \n",
+            "\n",
+            "Esperando prompt fim\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Melhorando a visualização\n",
+        "#Código disponível em https://ai.google.dev/tutorials/python_quickstart#import_packages\n",
+        "import textwrap\n",
+        "from IPython.display import display\n",
+        "from IPython.display import Markdown\n",
+        "\n",
+        "def to_markdown(text):\n",
+        "  text = text.replace('•', '  *')\n",
+        "  return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))\n",
+        "\n",
+        "#Imprimindo o histórico\n",
+        "for message in chat.history:\n",
+        "  display(to_markdown(f'**{message.role}**: {message.parts[0].text}'))\n",
+        "  print('-------------------------------------------')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 457
+        },
+        "id": "EHJSZrso3YvS",
+        "outputId": "36264c67-5bb2-4db2-eead-d5a4defaa73c"
+      },
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: que dia é hoje lá no japão"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Não tenho acesso a informações em tempo real, portanto não posso fornecer a data atual no Japão.\n> \n> Para obter a data e hora atuais no Japão, você pode verificar fontes confiáveis online ou locais, como a Hora Mundial do Google ou o site oficial do Observatório Astronômico Nacional do Japão."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: qual é capital do japão"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Tóquio\n> \n> Tóquio é a capital do Japão desde 1868. É também a cidade mais populosa do país e uma das maiores metrópoles do mundo."
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **user**: Qual a capital do japão"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.Markdown object>"
+            ],
+            "text/markdown": "> **model**: Tóquio"
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "-------------------------------------------\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
