@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyPNloyHI/Sgd4DWTbcyNdos",
+      "authorship_tag": "ABX9TyPT3vYitQ5DSj2+BWsNm8hq",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -60,9 +60,9 @@
       "source": [
         "# Import the Python SDK\n",
         "import google.generativeai as genai\n",
-        "\n",
-        "\n",
-        "GOOGLE_API_KEY=\"CHAVE API KEY\"\n",
+        "from google.colab import userdata\n",
+        "api_key = userdata.get('SECRET_KEY')\n",
+        "GOOGLE_API_KEY=\"api_key = api_key\"\n",
         "genai.configure(api_key=GOOGLE_API_KEY)"
       ],
       "metadata": {
